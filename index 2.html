@@ -1,0 +1,28 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0d10"><link rel="manifest" href="/manifest.json"><title>A股智能监控</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b0d10;color:#f5f6f8;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+main{max-width:700px;margin:auto;padding:calc(env(safe-area-inset-top)+12px) 15px 30px}.head{display:flex;justify-content:space-between;align-items:center;padding:8px 2px 16px}.title{font-size:28px;font-weight:800}.sub{font-size:12px;color:#9299a5;margin-top:4px}.online{font-size:12px;color:#60df82;background:#17331f;border-radius:20px;padding:7px 10px}
+.card{background:#15181e;border:1px solid #252a33;border-radius:18px;padding:16px;margin:10px 0}h2{font-size:16px;margin:0 0 13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.box{background:#101318;border-radius:14px;padding:13px}.label{font-size:12px;color:#9299a5}.big{font-size:21px;font-weight:800;margin-top:6px}.y{color:#ffc15a}.r{color:#ff6b6b}.g{color:#60df82}
+.item{padding:13px 0;border-bottom:1px solid #252932}.item:last-child{border:0}.row{display:flex;justify-content:space-between;gap:10px}.name{font-weight:750}.code{font-size:11px;color:#9299a5;margin-top:3px}.tag{font-size:12px;padding:6px 9px;border-radius:9px;background:#20252e}.reason{font-size:12px;color:#abb1bc;line-height:1.55;margin-top:7px}
+button{width:100%;border:0;border-radius:14px;padding:14px;background:#f2f3f5;color:#0b0d10;font-weight:750;font-size:15px}.foot{text-align:center;color:#737b87;font-size:11px;line-height:1.5;margin-top:14px}
+</style></head><body><main>
+<div class="head"><div><div class="title">A股智能监控</div><div class="sub">盘前 · 盘后 · 风险预警 · 持仓</div></div><div id="online" class="online">● 准备中</div></div>
+<div class="card"><h2>今日总判断</h2><div class="grid">
+<div class="box"><div class="label">市场环境</div><div id="env" class="big y">等待数据</div></div>
+<div class="box"><div class="label">总操作</div><div id="act" class="big">等待</div></div>
+<div class="box"><div class="label">海外风险</div><div class="big y">监控</div></div>
+<div class="box"><div class="label">数据状态</div><div id="rt" class="big">演示</div></div>
+</div></div>
+<div class="card"><h2>我的持仓</h2><div id="hold"></div></div>
+<div class="card"><h2>重点自选</h2><div id="watch"></div></div>
+<button onclick="load()">刷新</button>
+<div class="foot">实时数据接通后，系统才会执行真实行情与风险判断。未接通前不用于交易。</div>
+</main><script>
+const H=[["浪潮信息","000977","200","持有观察","y","已减仓，等待趋势确认"],["紫光国微","002049","100","小仓观察","y","保留观察仓，不因大跌自动补仓"],["半导体仓位","—","7600","控制风险","y","已主动减仓，等待海外风险缓和"]];
+const W=[["巨化股份","600160","等待实时价","等待","可重点关注","y"],["中国巨石","600176","等待实时价","等待","回调再看","y"],["生益科技","600183","等待实时价","等待","风险大于机会","r"],["浪潮信息","000977","等待实时价","等待","持有观察","y"],["兴森科技","002436","等待实时价","等待","高波动，等待确认","y"],["景旺电子","603228","等待实时价","等待","暂不追高","r"],["宏和科技","603256","等待实时价","等待","估值高，回调再看","r"]];
+function render(){hold.innerHTML=H.map(x=>`<div class=item><div class=row><div><div class=name>${x[0]}</div><div class=code>${x[1]} · ${x[2]}股</div></div><div class=tag>${x[3]}</div></div><div class=reason>${x[5]}</div></div>`).join('');watch.innerHTML=W.map(x=>`<div class=item><div class=row><div><div class=name>${x[0]}</div><div class=code>${x[1]}</div></div><div style=text-align:right><div class=name>${x[2]}</div><div class=code>${x[3]}</div></div></div><div class=tag style=display:inline-block;margin-top:8px>${x[4]}</div></div>`).join('')}
+async function load(){try{let r=await fetch('/api/status');let d=await r.json();online.textContent=d.realtime?'● 实时监控':'● 等待行情接入';rt.textContent=d.realtime?'实时':'待接入';env.textContent=d.environment;act.textContent=d.action}catch(e){online.textContent='● 离线'}}render();load();
+</script></body></html>
